@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 Page Not Found | STACKLY Boutique</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .page-404-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--color-warm-ivory);
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .page-404-logo {
+      height: 38px;
+      margin-bottom: 40px;
+    }
+    .page-404-code {
+      font-family: var(--font-heading);
+      font-size: clamp(5rem, 12vw, 9rem);
+      font-weight: 400;
+      color: var(--color-muted-taupe);
+      line-height: 1;
+      letter-spacing: -2px;
+      margin-bottom: 12px;
+    }
+    .page-404-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--color-charcoal);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .page-404-text {
+      font-family: var(--font-body);
+      color: var(--color-muted-taupe);
+      max-width: 520px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin: 0 auto 36px;
+    }
+    .page-404-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body class="site-body">
+  <div class="page-404-wrapper">
+    <a href="index.html">
+      <img src="assets/Brand-logo.webp" alt="STACKLY Atelier" class="page-404-logo">
+    </a>
+    <div class="page-404-code">404</div>
+    <h1 class="page-404-title">The Silhouette You Seek Does Not Exist</h1>
+    <p class="page-404-text">
+      The requested runway piece or catalogue page is currently unavailable or has been archived. Please choose an option below to return.
+    </p>
+    <div class="page-404-actions">
+      <!-- 'back' button -->
+      <button onclick="window.history.back()" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back
+      </button>
+      <!-- 'back to home' button -->
+      <a href="index.html" class="btn btn-primary">
+        <i class="fa-solid fa-house"></i> Back to Home
+      </a>
+    </div>
+  </div>
+</body>
+</html>
+
