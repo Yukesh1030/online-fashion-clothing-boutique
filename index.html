@@ -770,34 +770,94 @@
         
         <form id="checkoutForm" class="checkout-form" novalidate>
           <div class="form-row form-row-2">
-            <div class="form-group">
+            <div class="form-group" id="groupOrderFirstName">
               <label for="orderFirstName">First Name *</label>
-              <input type="text" id="orderFirstName" required placeholder="Elena">
+              <input 
+                type="text" 
+                id="orderFirstName" 
+                name="firstName" 
+                required 
+                aria-required="true"
+                aria-describedby="orderFirstNameError"
+                autocomplete="given-name" 
+                placeholder="Elena"
+              >
+              <span class="form-error-msg" id="orderFirstNameError" aria-live="polite"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="groupOrderLastName">
               <label for="orderLastName">Last Name *</label>
-              <input type="text" id="orderLastName" required placeholder="Vance">
+              <input 
+                type="text" 
+                id="orderLastName" 
+                name="lastName" 
+                required 
+                aria-required="true"
+                aria-describedby="orderLastNameError"
+                autocomplete="family-name" 
+                placeholder="Vance"
+              >
+              <span class="form-error-msg" id="orderLastNameError" aria-live="polite"></span>
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="groupOrderEmail">
             <label for="orderEmail">Email Address *</label>
-            <input type="email" id="orderEmail" required placeholder="elena.vance@example.com">
+            <input 
+              type="email" 
+              id="orderEmail" 
+              name="email" 
+              required 
+              aria-required="true"
+              aria-describedby="orderEmailError"
+              autocomplete="email" 
+              placeholder="elena.vance@example.com"
+            >
+            <span class="form-error-msg" id="orderEmailError" aria-live="polite"></span>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="groupOrderAddress">
             <label for="orderAddress">Shipping Address *</label>
-            <input type="text" id="orderAddress" required placeholder="75008 Rue du Faubourg Saint-Honoré">
+            <input 
+              type="text" 
+              id="orderAddress" 
+              name="address" 
+              required 
+              aria-required="true"
+              aria-describedby="orderAddressError"
+              autocomplete="street-address" 
+              placeholder="75008 Rue du Faubourg Saint-Honoré"
+            >
+            <span class="form-error-msg" id="orderAddressError" aria-live="polite"></span>
           </div>
 
           <div class="form-row form-row-2">
-            <div class="form-group">
+            <div class="form-group" id="groupOrderCity">
               <label for="orderCity">City *</label>
-              <input type="text" id="orderCity" required placeholder="Paris">
+              <input 
+                type="text" 
+                id="orderCity" 
+                name="city" 
+                required 
+                aria-required="true"
+                aria-describedby="orderCityError"
+                autocomplete="address-level2" 
+                placeholder="Paris"
+              >
+              <span class="form-error-msg" id="orderCityError" aria-live="polite"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="groupOrderPostal">
               <label for="orderPostal">Postal Code *</label>
-              <input type="text" id="orderPostal" required placeholder="75008">
+              <input 
+                type="text" 
+                id="orderPostal" 
+                name="postal" 
+                required 
+                aria-required="true"
+                aria-describedby="orderPostalError"
+                autocomplete="postal-code" 
+                placeholder="75008"
+              >
+              <span class="form-error-msg" id="orderPostalError" aria-live="polite"></span>
             </div>
           </div>
 

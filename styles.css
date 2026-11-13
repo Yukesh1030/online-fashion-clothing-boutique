@@ -2182,9 +2182,11 @@ input, select, textarea {
 }
 
 .form-group {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transition: all var(--transition-fast);
 }
 
 .form-group label {
@@ -2193,6 +2195,7 @@ input, select, textarea {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-charcoal);
+  transition: color var(--transition-fast);
 }
 
 .form-group input {
@@ -2201,11 +2204,75 @@ input, select, textarea {
   border-radius: var(--radius-sm);
   outline: none;
   font-size: 0.95rem;
-  transition: border-color var(--transition-fast);
+  font-family: var(--font-body);
+  color: var(--color-charcoal);
+  background-color: var(--color-pure-white);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .form-group input:focus {
   border-color: var(--color-charcoal);
+  box-shadow: 0 0 0 2px rgba(37, 34, 31, 0.08);
+}
+
+/* Valid Input State */
+.form-group.is-valid input {
+  border-color: #2e6945;
+  background-color: rgba(46, 105, 69, 0.02);
+}
+
+.form-group.is-valid input:focus {
+  border-color: #2e6945;
+  box-shadow: 0 0 0 3px rgba(46, 105, 69, 0.12);
+}
+
+/* Invalid / Error Input State */
+.form-group.has-error label {
+  color: #b23a22;
+}
+
+.form-group.has-error input {
+  border-color: #b23a22 !important;
+  background-color: rgba(178, 58, 34, 0.03);
+  box-shadow: 0 0 0 3px rgba(178, 58, 34, 0.14) !important;
+}
+
+.form-group.shake-error input {
+  animation: formShake 0.4s ease-in-out;
+}
+
+@keyframes formShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+/* Field Error Helper Message */
+.form-error-msg {
+  display: none;
+  font-size: 0.76rem;
+  color: #b23a22;
+  font-weight: 500;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.form-group.has-error .form-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  animation: errorFadeIn 0.22s ease-out forwards;
+}
+
+@keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .checkout-summary-mini {

@@ -323,6 +323,12 @@
     checkoutFormStep: document.getElementById('checkoutFormStep'),
     orderConfirmationStep: document.getElementById('orderConfirmationStep'),
     checkoutForm: document.getElementById('checkoutForm'),
+    orderFirstName: document.getElementById('orderFirstName'),
+    orderLastName: document.getElementById('orderLastName'),
+    orderEmail: document.getElementById('orderEmail'),
+    orderAddress: document.getElementById('orderAddress'),
+    orderCity: document.getElementById('orderCity'),
+    orderPostal: document.getElementById('orderPostal'),
     checkoutSummaryItemsCount: document.getElementById('checkoutSummaryItemsCount'),
     checkoutSummaryTotal: document.getElementById('checkoutSummaryTotal'),
     receiptOrderId: document.getElementById('receiptOrderId'),
@@ -910,8 +916,177 @@
   }
 
   // =========================================================================
-  // CHECKOUT & ORDER CONFIRMATION
+  // CHECKOUT & ORDER CONFIRMATION WITH STRICT FORM VALIDATIONS
   // =========================================================================
+
+  const CHECKOUT_FIELD_RULES = {
+    orderFirstName: {
+      label: 'First name',
+      validate: (val) => {
+        if (!val) return 'Please enter your first name.';
+        if (val.length < 2) return 'First name must contain at least 2 characters.';
+        if (val.length > 35) return 'First name cannot exceed 35 characters.';
+        const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[\s'-][A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
+        if (!nameRegex.test(val)) return 'First name can only contain letters, hyphens, and apostrophes.';
+        return null;
+      }
+    },
+    orderLastName: {
+      label: 'Last name',
+      validate: (val) => {
+        if (!val) return 'Please enter your last name.';
+        if (val.length < 2) return 'Last name must contain at least 2 characters.';
+        if (val.length > 35) return 'Last name cannot exceed 35 characters.';
+        const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[\s.'-]+[A-Za-zÀ-ÖØ-öø-ÿ]+)*$/;
+        if (!nameRegex.test(val)) return 'Last name can only contain letters, hyphens, and apostrophes.';
+        return null;
+      }
+    },
+    orderEmail: {
+      label: 'Email address',
+      validate: (val) => {
+        if (!val) return 'Please provide your email address.';
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+        if (!emailRegex.test(val)) return 'Please enter a valid email address (e.g. name@domain.com).';
+        const parts = val.split('@');
+        if (parts.length === 2) {
+          const domain = parts[1];
+          const dotParts = domain.split('.');
+          const tld = dotParts[dotParts.length - 1];
+          if (!tld || tld.length < 2) return 'Email domain must contain a valid top-level domain (e.g. .com).';
+        }
+        return null;
+      }
+    },
+    orderAddress: {
+      label: 'Shipping address',
+      validate: (val) => {
+        if (!val) return 'Please provide your street delivery address.';
+        if (val.length < 5) return 'Shipping address must contain at least 5 characters.';
+        if (val.length > 120) return 'Shipping address cannot exceed 120 characters.';
+        if (!/[a-zA-ZÀ-ÖØ-öø-ÿ0-9]/.test(val)) return 'Please provide a valid street address.';
+        const addressRegex = /^[a-zA-Z0-9À-ÖØ-öø-ÿ\s,.'#\/-]{5,120}$/;
+        if (!addressRegex.test(val)) return 'Address contains unsupported special characters.';
+        return null;
+      }
+    },
+    orderCity: {
+      label: 'City',
+      validate: (val) => {
+        if (!val) return 'Please enter your delivery city.';
+        if (val.length < 2) return 'City name must contain at least 2 characters.';
+        if (val.length > 50) return 'City name cannot exceed 50 characters.';
+        const cityRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(?:[\s.'-]+[A-Za-zÀ-ÖØ-öø-ÿ]+)*\.?$/;
+        if (!cityRegex.test(val)) return 'City name can only contain letters, spaces, and hyphens.';
+        return null;
+      }
+    },
+    orderPostal: {
+      label: 'Postal code',
+      validate: (val) => {
+        if (!val) return 'Please enter your postal or ZIP code.';
+        if (val.length < 3 || val.length > 10) return 'Postal code must be between 3 and 10 characters.';
+        const postalRegex = /^[A-Za-z0-9][A-Za-z0-9\s-]{1,8}[A-Za-z0-9]$/;
+        if (!postalRegex.test(val)) return 'Please enter a valid postal code (e.g. 75008 or SW1A 1AA).';
+        return null;
+      }
+    }
+  };
+
+  function validateCheckoutField(fieldId, triggerShake = false) {
+    const input = document.getElementById(fieldId);
+    if (!input) return true;
+    const rule = CHECKOUT_FIELD_RULES[fieldId];
+    if (!rule) return true;
+
+    const value = input.value.trim();
+    const errorMsg = rule.validate(value);
+    const group = input.closest('.form-group');
+    const errorEl = document.getElementById(`${fieldId}Error`);
+
+    if (errorMsg) {
+      if (group) {
+        group.classList.add('has-error');
+        group.classList.remove('is-valid');
+        if (triggerShake) {
+          group.classList.remove('shake-error');
+          void group.offsetWidth; // Force CSS reflow to re-trigger keyframe
+          group.classList.add('shake-error');
+          setTimeout(() => group.classList.remove('shake-error'), 450);
+        }
+      }
+      input.setAttribute('aria-invalid', 'true');
+      if (errorEl) {
+        errorEl.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${errorMsg}`;
+      }
+      return false;
+    } else {
+      if (group) {
+        group.classList.remove('has-error', 'shake-error');
+        group.classList.add('is-valid');
+      }
+      input.setAttribute('aria-invalid', 'false');
+      if (errorEl) {
+        errorEl.innerHTML = '';
+      }
+      return true;
+    }
+  }
+
+  function validateAllCheckoutFields(triggerShake = false) {
+    let isValid = true;
+    let firstInvalidInput = null;
+
+    Object.keys(CHECKOUT_FIELD_RULES).forEach((fieldId) => {
+      const fieldValid = validateCheckoutField(fieldId, triggerShake);
+      if (!fieldValid) {
+        isValid = false;
+        if (!firstInvalidInput) {
+          firstInvalidInput = document.getElementById(fieldId);
+        }
+      }
+    });
+
+    return { isValid, firstInvalidInput };
+  }
+
+  function resetCheckoutValidation() {
+    Object.keys(CHECKOUT_FIELD_RULES).forEach((fieldId) => {
+      const input = document.getElementById(fieldId);
+      if (input) {
+        const group = input.closest('.form-group');
+        if (group) {
+          group.classList.remove('has-error', 'is-valid', 'shake-error');
+        }
+        input.setAttribute('aria-invalid', 'false');
+        const errorEl = document.getElementById(`${fieldId}Error`);
+        if (errorEl) {
+          errorEl.innerHTML = '';
+        }
+      }
+    });
+  }
+
+  function initCheckoutValidation() {
+    Object.keys(CHECKOUT_FIELD_RULES).forEach((fieldId) => {
+      const input = document.getElementById(fieldId);
+      if (!input) return;
+
+      // Validate when user leaves the field
+      input.addEventListener('blur', () => {
+        validateCheckoutField(fieldId, false);
+      });
+
+      // Clear or update validation on input if field already had an error
+      input.addEventListener('input', () => {
+        const group = input.closest('.form-group');
+        if (group && group.classList.contains('has-error')) {
+          validateCheckoutField(fieldId, false);
+        }
+      });
+    });
+  }
+
   function openCheckoutModal() {
     if (state.cart.length === 0) {
       showToast('Your shopping bag is empty.', 'fa-solid fa-triangle-exclamation');
@@ -925,6 +1100,7 @@
     dom.checkoutSummaryItemsCount.textContent = `${totalItems} piece${totalItems > 1 ? 's' : ''}`;
     dom.checkoutSummaryTotal.textContent = `$${totals.total.toFixed(2)}`;
 
+    resetCheckoutValidation();
     dom.checkoutFormStep.classList.remove('hidden');
     dom.orderConfirmationStep.classList.add('hidden');
     dom.checkoutModal.classList.remove('hidden');
@@ -934,17 +1110,22 @@
   function handleOrderSubmission(e) {
     e.preventDefault();
 
-    const firstName = document.getElementById('orderFirstName').value.trim();
-    const lastName = document.getElementById('orderLastName').value.trim();
-    const email = document.getElementById('orderEmail').value.trim();
-    const address = document.getElementById('orderAddress').value.trim();
-    const city = document.getElementById('orderCity').value.trim();
-    const postal = document.getElementById('orderPostal').value.trim();
+    const { isValid, firstInvalidInput } = validateAllCheckoutFields(true);
 
-    if (!firstName || !lastName || !email || !address || !city || !postal) {
-      showToast('Please complete all required fields.', 'fa-solid fa-triangle-exclamation');
+    if (!isValid) {
+      if (firstInvalidInput) {
+        firstInvalidInput.focus();
+      }
+      showToast('Please correct the highlighted fields with valid information.', 'fa-solid fa-triangle-exclamation');
       return;
     }
+
+    const firstName = dom.orderFirstName.value.trim();
+    const lastName = dom.orderLastName.value.trim();
+    const email = dom.orderEmail.value.trim();
+    const address = dom.orderAddress.value.trim();
+    const city = dom.orderCity.value.trim();
+    const postal = dom.orderPostal.value.trim();
 
     const totals = calculateCartTotals();
     const orderId = `ELR-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -972,12 +1153,15 @@
     dom.receiptCustomerEmail.textContent = email;
     dom.receiptOrderTotal.textContent = `$${totals.total.toFixed(2)}`;
 
-    // Clear cart
+    // Clear cart and reset form
     state.cart = [];
     state.appliedCoupon = null;
     persistCart();
     persistCoupon();
     updateBadges();
+
+    dom.checkoutForm.reset();
+    resetCheckoutValidation();
 
     // Switch view
     dom.checkoutFormStep.classList.add('hidden');
@@ -986,6 +1170,7 @@
   }
 
   function closeCheckoutModal() {
+    resetCheckoutValidation();
     dom.checkoutModal.classList.add('hidden');
     document.body.classList.remove('modal-open');
   }
@@ -1393,6 +1578,7 @@
     });
     dom.checkoutForm.addEventListener('submit', handleOrderSubmission);
     dom.orderFinishBtn.addEventListener('click', closeCheckoutModal);
+    initCheckoutValidation();
 
     // Newsletter
     dom.newsletterForm.addEventListener('submit', handleNewsletterSubmit);
