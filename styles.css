@@ -461,6 +461,26 @@ input, select, textarea {
   border-bottom: 1px solid var(--color-border-light);
 }
 
+.drawer-brand-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  max-width: 150px;
+}
+
+.drawer-brand-logo-img {
+  height: 28px;
+  width: auto;
+  max-width: 135px;
+  object-fit: contain;
+  filter: contrast(1.1);
+  transition: transform var(--transition-fast);
+}
+
+.drawer-brand-link:hover .drawer-brand-logo-img {
+  transform: scale(1.02);
+}
+
 .drawer-brand-title {
   font-family: var(--font-heading);
   font-size: 1.25rem;
